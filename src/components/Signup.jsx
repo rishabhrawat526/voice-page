@@ -3,12 +3,24 @@ import {useForm} from "react-hook-form";
 import Input from './Input';
 import Button from './Button';
 import { DevTool } from '@hookform/devtools';
-
+import authService from '../appwrite/auth';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/authSlice';
 function Signup() {
   const {register,control,formState,handleSubmit} = useForm();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {errors} = formState;
   const onSubmit=(data)=>{
-    
+    const user = authService.signup(data);
+    if(user)
+    {
+      const userData  = authService.getCurrentUser();
+      dispatch(login(userData));
+      navigate('/');
+    }
+
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

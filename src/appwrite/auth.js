@@ -1,22 +1,23 @@
+
 import conf from "./../conf/conf"
 import { Client, Account ,ID} from "appwrite";
 
-class AuthService{
+export class AuthService{
     client = new Client();
     account;
-    AuthService()
+    constructor()
     {
         this.client.setEndpoint(conf.appwrite_url).setProject(conf.appwrite_project_id);
         this.account = new Account(this.client);
 
     }
-    async signup({email,password,name})
+    async signup({email,password,username})
     {
        try {
-           const user =  await this.account.create(ID.unique(),email,password,name);
+           const user =  await this.account.create(ID.unique(),email,password,username);
            if(user)
            {
-
+            return this.login({email,password})
            }
        } catch (error) {
         console.log(error.message)

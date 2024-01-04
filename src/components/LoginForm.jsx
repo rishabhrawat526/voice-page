@@ -3,12 +3,27 @@ import {useForm} from "react-hook-form"
 import {DevTool} from "@hookform/devtools"
 import Input from "./Input";
 import Button from "./Button";
+import { useDispatch } from 'react-redux';
+import { login } from '../features/authSlice';
+import authService from '../appwrite/auth';
+import { useNavigate } from 'react-router-dom';
 function LoginForm() {
     const {register,control,handleSubmit,formState} = useForm();
     const {errors} = formState;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     // const {id,name,onBlur,onChange} = register('username');
-    const onSubmit=(data)=>{
-        console.log("form submitted",data);
+    const onSubmit=async(data)=>{
+        const response = await authService.login(data);
+        if(response)
+        {
+            const userData = await authService.getCurrentUser();
+            if(userData)
+            {
+                dispatch(login(userData));
+                navigate('/');
+            }
+        }
     };
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
