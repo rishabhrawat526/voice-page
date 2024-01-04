@@ -36,11 +36,20 @@ class AuthService{
     async logout()
     {
         try {
-            this.account.deleteSessions();
+           await this.account.deleteSessions();
             // navigate to login page if successfull
         } catch (error) {
             console.log(error.message)
         }
+    }
+    async getCurrentUser()
+    {
+        try {
+            return await this.account.get();
+        } catch (error) {
+            console.log(error.message)
+        }
+        return null;
     }
 };
 const authService = new AuthService();
